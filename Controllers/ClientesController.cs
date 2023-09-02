@@ -22,7 +22,7 @@ namespace CamarasFrias.Controllers
         public ClientesController(IClienteBusiness clientBusiness)
         {
             _clienteBusiness = clientBusiness;
-        }
+        } 
 
         // GET: api/Clientes
         [HttpGet]
@@ -34,106 +34,48 @@ namespace CamarasFrias.Controllers
         }
 
         //// GET: api/Clientes/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Cliente>> GetCliente(int id)
-        //{
-        //  if (_context.Clientes == null)
-        //  {
-        //      return NotFound();
-        //  }
-        //    var cliente = await _context.Clientes.FindAsync(id);
-
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return cliente;
-        //}
+        [HttpGet("{DNI}")]
+        public async Task<ActionResult<Cliente>> GetCliente(int DNI)
+        {
+            var result = new JsonResult(_clienteBusiness.TraerClienteId(DNI));
+            result.StatusCode = (int)HttpStatusCode.OK;
+            return result;
+        }
 
         //// PUT: api/Clientes/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutCliente(int id, Cliente cliente)
-        //{
-        //    if (id != cliente.Dni)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCliente(int id, ClientePutDTO cliente)
+        {
+            var result = new JsonResult(_clienteBusiness.ActualizarCliente(id, cliente));
+            if (id != null)
+            {
+                result.StatusCode = (int)HttpStatusCode.OK;
+                
+            }
+            else
+            {
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+            return result;
 
-        //    _context.Entry(cliente).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!ClienteExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
+        }
 
         //// POST: api/Clientes
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<IActionResult<Cliente>> PostCliente(Cliente cliente)
-        //{
-        //  if (_context.Clientes == null)
-        //  {
-        //      return Problem("Entity set 'CamarasFriasContext.Clientes'  is null.");
-        //  }
-        //    _context.Clientes.Add(cliente);
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (ClienteExists(cliente.Dni))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return CreatedAtAction("GetCliente", new { id = cliente.Dni }, cliente);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Create(ClienteDTO cliente)
+        {
+            var result = new JsonResult(_clienteBusiness.CrearCliente(cliente));
+            result.StatusCode = (int)HttpStatusCode.Created;
+            return result;
+        }
 
         //// DELETE: api/Clientes/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteCliente(int id)
-        //{
-        //    if (_context.Clientes == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var cliente = await _context.Clientes.FindAsync(id);
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Clientes.Remove(cliente);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //private bool ClienteExists(int id)
-        //{
-        //    return (_context.Clientes?.Any(e => e.Dni == id)).GetValueOrDefault();
-        //}
+        [HttpDelete("{DNI}")]
+        public async Task<IActionResult> Delete(int DNI)
+        {
+            var result = new JsonResult(_clienteBusiness.EliminarCliente(DNI));
+            result.StatusCode = (int)HttpStatusCode.OK;
+            return result;
+        }
     }
 }

@@ -14,24 +14,54 @@ namespace CamarasFrias.Application.Business
             _context =  context;   
         }
 
-        public bool ActualizarCliente(int Id, Cliente cliente)
+        public bool ActualizarCliente(int Id, ClientePutDTO cliente)
         {
-            throw new NotImplementedException();
+            
+            Cliente clienteExistente = _context.Clientes.FirstOrDefault(c => c.Dni == Id);
+
+            if (clienteExistente != null)
+            {
+                clienteExistente.Nombre = cliente.Nombre;
+                clienteExistente.Domicilio = cliente.Domicilio;
+                clienteExistente.Telefono = cliente.Telefono;
+
+                _context.SaveChanges();  // Guardar los cambios en la base de datos
+                return true;  // Cliente actualizado con éxito
+            }
+
+            return false;
+
         }
 
-        public ClienteDTO CrearCliente()
+        public ClienteDTO CrearCliente(ClienteDTO clienteDTO)
         {
-            throw new NotImplementedException();
+            var cliente = ClienteMapper.createCliente(clienteDTO);
+            _context.Clientes.Add(cliente);
+            _context.SaveChanges();
+
+            return clienteDTO;
         }
 
-        public bool EliminarCliente()
+        public bool EliminarCliente(int DNI)
         {
-            throw new NotImplementedException();
+            Cliente cliente = _context.Clientes.FirstOrDefault(c => c.Dni == DNI);
+
+            if (cliente != null)
+            {
+                _context.Clientes.Remove(cliente);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
-        public ClienteDTO TraerClienteId(int Id)
+        public ClienteDTO TraerClienteId(int DNI)
         {
-            throw new NotImplementedException();
+            Cliente cliente = _context.Clientes.FirstOrDefault(c => c.Dni == DNI);
+
+            ClienteDTO clienteDTO = ClienteMapper.ToClienteDTO(cliente);
+
+            return clienteDTO;
         }
 
         public List<ClienteDTO> TraerClientes()
@@ -41,6 +71,12 @@ namespace CamarasFrias.Application.Business
             List<ClienteDTO> clienteDTOs = ClienteMapper.ToClienteList(clientes);
 
             return clienteDTOs;
+        }
+
+
+        private bool ClienteExists(int DNI)
+        {
+            return (_context.Clientes.Any(e => e.Dni == DNI));
         }
     }
 }

@@ -5,11 +5,11 @@ namespace CamarasFrias.Application.Business.Interfaces
 {
     public interface IClienteBusiness
     {
-        public ClienteDTO CrearCliente();
+        public ClienteDTO CrearCliente(ClienteDTO clienteDTO);
         public List<ClienteDTO> TraerClientes();
-        public ClienteDTO TraerClienteId(int Id);
-        public bool EliminarCliente();
-        public bool ActualizarCliente(int Id, Cliente cliente);
+        public ClienteDTO TraerClienteId(int DNI);
+        public bool EliminarCliente(int DNI);
+        public bool ActualizarCliente(int DNI, ClientePutDTO cliente);
 
     }
 }
