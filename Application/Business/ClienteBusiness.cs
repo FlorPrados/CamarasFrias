@@ -3,6 +3,7 @@ using CamarasFrias.Application.Mapper;
 using CamarasFrias.Domain.DTO;
 using CamarasFrias.Domain.Entities;
 using CamarasFrias.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CamarasFrias.Application.Business
 {
@@ -35,6 +36,13 @@ namespace CamarasFrias.Application.Business
 
         public ClienteDTO CrearCliente(ClienteDTO clienteDTO)
         {
+            Cliente clienteDNI = _context.Clientes.FirstOrDefault(c => c.Dni == clienteDTO.Dni);
+
+            if (clienteDNI != null)
+            {
+                return null;
+            }
+
             var cliente = ClienteMapper.createCliente(clienteDTO);
             _context.Clientes.Add(cliente);
             _context.SaveChanges();

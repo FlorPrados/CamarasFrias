@@ -38,23 +38,33 @@ namespace CamarasFrias.Controllers
         public async Task<ActionResult<Cliente>> GetCliente(int DNI)
         {
             var result = new JsonResult(_clienteBusiness.TraerClienteId(DNI));
-            result.StatusCode = (int)HttpStatusCode.OK;
+            var cliente = _clienteBusiness.TraerClienteId(DNI);
+            if (cliente == null)
+            {
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+            else
+            {
+                result.StatusCode = (int)HttpStatusCode.OK;
+            }
             return result;
+
         }
 
         //// PUT: api/Clientes/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCliente(int id, ClientePutDTO cliente)
         {
+            var clienteDNI = _clienteBusiness.TraerClienteId(id);
             var result = new JsonResult(_clienteBusiness.ActualizarCliente(id, cliente));
-            if (id != null)
+            if (clienteDNI == null)
             {
-                result.StatusCode = (int)HttpStatusCode.OK;
+                result.StatusCode = (int)HttpStatusCode.NotFound;
                 
             }
             else
             {
-                result.StatusCode = (int)HttpStatusCode.NotFound;
+                result.StatusCode = (int)HttpStatusCode.OK;
             }
             return result;
 
@@ -64,9 +74,18 @@ namespace CamarasFrias.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ClienteDTO cliente)
         {
-            var result = new JsonResult(_clienteBusiness.CrearCliente(cliente));
-            result.StatusCode = (int)HttpStatusCode.Created;
-            return result;
+            var clienteCreado = _clienteBusiness.CrearCliente(cliente);
+
+            if (clienteCreado != null)
+            {
+                var result = new JsonResult(clienteCreado);
+                result.StatusCode = (int)HttpStatusCode.Created;
+                return result;
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         //// DELETE: api/Clientes/5
@@ -74,7 +93,14 @@ namespace CamarasFrias.Controllers
         public async Task<IActionResult> Delete(int DNI)
         {
             var result = new JsonResult(_clienteBusiness.EliminarCliente(DNI));
-            result.StatusCode = (int)HttpStatusCode.OK;
+            if(!_clienteBusiness.EliminarCliente(DNI))
+            {
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+            else
+            {
+                result.StatusCode = (int)HttpStatusCode.OK;
+            }
             return result;
         }
     }
