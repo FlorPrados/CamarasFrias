@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CamarasFrias.Domain.Entities;
 using CamarasFrias.Infrastructure.Persistence;
+using CamarasFrias.Application.Business.Interfaces;
+using CamarasFrias.Domain.DTO;
+using System.Net;
 
 namespace CamarasFrias.Controllers
 {
@@ -14,125 +17,98 @@ namespace CamarasFrias.Controllers
     [ApiController]
     public class ProductosController : ControllerBase
     {
-        private readonly CamarasFriasContext _context;
-
-        public ProductosController(CamarasFriasContext context)
+        private readonly IProductoBusiness _productoBusiness;
+        public ProductosController(IProductoBusiness productoBusiness)
         {
-            _context = context;
+            _productoBusiness = productoBusiness;
         }
 
-        // GET: api/Productos
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
-        {
-          if (_context.Productos == null)
-          {
-              return NotFound();
-          }
-            return await _context.Productos.ToListAsync();
-        }
-
-        // GET: api/Productos/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Producto>> GetProducto(int id)
-        {
-          if (_context.Productos == null)
-          {
-              return NotFound();
-          }
-            var producto = await _context.Productos.FindAsync(id);
-
-            if (producto == null)
-            {
-                return NotFound();
-            }
-
-            return producto;
-        }
-
-        // PUT: api/Productos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducto(int id, Producto producto)
-        {
-            if (id != producto.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(producto).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Productos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Producto>> PostProducto(Producto producto)
+        public async Task<IActionResult> Create(ProductoDTO producto)
         {
-          if (_context.Productos == null)
-          {
-              return Problem("Entity set 'CamarasFriasContext.Productos'  is null.");
-          }
-            _context.Productos.Add(producto);
-            try
+            var pto = _productoBusiness.CrearProducto(producto);
+            if(pto != null)
             {
-                await _context.SaveChangesAsync();
+                var result = new JsonResult(pto);
+                result.StatusCode = (int)HttpStatusCode.Created;
+                return result;
             }
-            catch (DbUpdateException)
-            {
-                if (ProductoExists(producto.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
+            return BadRequest();
         }
 
-        // DELETE: api/Productos/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProducto(int id)
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-            if (_context.Productos == null)
-            {
-                return NotFound();
-            }
-            var producto = await _context.Productos.FindAsync(id);
-            if (producto == null)
-            {
-                return NotFound();
-            }
+            var ptos = _productoBusiness.TraerProductos();
 
-            _context.Productos.Remove(producto);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var result = new JsonResult(ptos);
+            result.StatusCode = (int)HttpStatusCode.OK;
+            return result;
         }
 
-        private bool ProductoExists(int id)
+        [HttpGet("Id")]
+        public async Task<IActionResult> Get(int Id)
         {
-            return (_context.Productos?.Any(e => e.Id == id)).GetValueOrDefault();
+            var pto = _productoBusiness.TraerProductoId(Id);
+
+            if (pto != null)
+            {
+                var result = new JsonResult(pto);
+                result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
+            }
+            return NotFound();
+        }
+
+        [HttpPut("Id")]
+        public async Task<IActionResult> Put(int Id, ProductoPutDTO producto)
+        {
+            var pto = _productoBusiness.ActualizarProducto(Id, producto);
+            if (pto == true)
+            {
+                var result = new JsonResult(pto);
+                result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
+            }
+            return NotFound();
+        }
+
+        [HttpPatch("AcualizarStock/{Id}")]
+        public async Task<IActionResult> PatchStock(int Id, int cantidad)
+        {
+            var pto = _productoBusiness.ActualizarStock(Id, cantidad);
+            if (pto == true)
+            {
+                var result = new JsonResult(pto);
+                result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
+            }
+            return NotFound();
+        }
+        [HttpPatch("ActualizarPrecio/{Id}")]
+        public async Task<IActionResult> PatchPrecio(int Id, int precio)
+        {
+            var pto = _productoBusiness.ActualizarPrecio(Id, precio);
+            if (pto == true)
+            {
+                var result = new JsonResult(pto);
+                result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("Id")]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var pto = _productoBusiness.EliminarProducto(Id);
+            if (pto == true)
+            {
+                var result = new JsonResult(pto);
+                result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
+            }
+            return NotFound();
         }
     }
 }

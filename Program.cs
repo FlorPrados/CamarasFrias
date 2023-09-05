@@ -16,6 +16,7 @@ builder.Services.AddDbContext<CamarasFriasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetSection("ConnectionString").Value);
 });
 builder.Services.AddScoped<IClienteBusiness, ClienteBusiness>();
+builder.Services.AddScoped<IProductoBusiness, ProductoBusiness>();
 
 var app = builder.Build();
 
