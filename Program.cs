@@ -17,6 +17,7 @@ builder.Services.AddDbContext<CamarasFriasContext>(options =>
 });
 builder.Services.AddScoped<IClienteBusiness, ClienteBusiness>();
 builder.Services.AddScoped<IProductoBusiness, ProductoBusiness>();
+builder.Services.AddScoped<IVentaBusiness, VentaBusiness>();
 
 var app = builder.Build();
 

@@ -14,5 +14,6 @@ namespace CamarasFrias.Domain.Entities
 
         public virtual Producto Producto { get; set; } = null!;
         public virtual Ventum Venta { get; set; } = null!;
+
     }
 }
