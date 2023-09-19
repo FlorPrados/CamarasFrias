@@ -25,15 +25,15 @@ namespace CamarasFrias.Application.Business
 
             var venta = new Ventum
             {
-                NroComprobante = ventaDTO.NroComprobante,
                 ClienteId = ventaDTO.ClienteDNI,
                 Nota = ventaDTO.Nota,
                 Fecha = DateTime.Now
             };
 
             _context.Venta.Add(venta);
-            _context.SaveChanges();
+            _context.SaveChanges();   // ?
 
+            decimal precioTotal = 0;
             foreach(var pto in ventaDTO.Productos)
             {
                 var producto = _context.Productos.FirstOrDefault(p => p.Id == pto.ProductoID);
@@ -42,7 +42,6 @@ namespace CamarasFrias.Application.Business
                 {
                     var detalleVenta = new DetalleVentum
                     {
-                        Id = 
                         VentaId = venta.NroComprobante,
                         ProductoId = producto.Id,
                         Cantidad = pto.Cantidad,
@@ -52,12 +51,14 @@ namespace CamarasFrias.Application.Business
 
                     
                     _context.DetalleVenta.Add(detalleVenta);
-                    venta.PrecioFinal = detalleVenta.Subtotal;
+                    precioTotal += detalleVenta.Subtotal;
                 }
                 else
                     return null;
             }
-            
+
+            venta.PrecioFinal = precioTotal;
+            _context.Venta.Update(venta);
             _context.SaveChanges();
 
             return ventaDTO;

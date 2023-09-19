@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CamarasFrias.Domain.Entities
 {
-    public class Producto
+    public partial class Producto
     {
         public Producto()
         {

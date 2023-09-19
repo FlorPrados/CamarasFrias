@@ -18,7 +18,6 @@ namespace CamarasFrias.Application.Mapper
 
                 return new Ventum
                 {
-                    NroComprobante = ventaDTO.NroComprobante,
                     ClienteId = ventaDTO.ClienteDNI,
                     Nota = ventaDTO.Nota
                 };
