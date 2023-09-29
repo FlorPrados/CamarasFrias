@@ -24,5 +24,37 @@ namespace CamarasFrias.Application.Mapper
             }
             return null;
         }
+
+        //public static Ventum putVenta(Ventum venta)
+        //{
+        //    if(venta != null)
+        //    {
+        //        return new Ventum
+        //        {
+        //        ClienteId = ventaDTO.ClienteDNI,
+        //        Nota = ventaDTO.Nota,
+        //        Fecha = DateTime.Now
+        //        };
+        //    }
+        //    return null;
+        //}
+
+        public static VentaGetDTO ToVentaDTO(Ventum venta, List<DetalleGetProducto> productos, Cliente cliente)
+        {
+            if (venta != null)
+            {
+                return new VentaGetDTO
+                {
+                    NroComprobante = venta.NroComprobante,
+                    ClienteDNI = venta.ClienteId,
+                    Nombre = cliente.Nombre,
+                    Fecha = venta.Fecha,
+                    Productos = productos,
+                    Nota = venta.Nota,
+                    Total = venta.PrecioFinal
+                };
+            }
+            return null;
+        }
     }
 }
