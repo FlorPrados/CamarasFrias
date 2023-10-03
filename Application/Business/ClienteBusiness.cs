@@ -20,71 +20,90 @@ namespace CamarasFrias.Application.Business
             
             Cliente clienteExistente = _context.Clientes.FirstOrDefault(c => c.Dni == Id);
 
-            if (clienteExistente != null)
-            {
-                clienteExistente.Nombre = cliente.Nombre;
-                clienteExistente.Domicilio = cliente.Domicilio;
-                clienteExistente.Telefono = cliente.Telefono;
+            if (clienteExistente == null) return false;
 
-                _context.SaveChanges();  // Guardar los cambios en la base de datos
-                return true;  // Cliente actualizado con éxito
-            }
+            clienteExistente.Nombre = cliente.Nombre;
+            clienteExistente.Domicilio = cliente.Domicilio;
+            clienteExistente.Telefono = cliente.Telefono;
 
-            return false;
+            _context.SaveChanges();
+            return true;
 
         }
 
         public ClienteDTO CrearCliente(ClienteDTO clienteDTO)
         {
-            Cliente clienteDNI = _context.Clientes.FirstOrDefault(c => c.Dni == clienteDTO.Dni);
-
-            if (clienteDNI != null)
+            try
             {
-                return null;
+                Cliente clienteDNI = _context.Clientes.FirstOrDefault(c => c.Dni == clienteDTO.Dni);
+
+                if (clienteDNI != null)
+                {
+                    return null;
+                    //throw new InvalidOperationException("Ya existe un cliente con el DNI registrado");
+                }
+
+                var cliente = ClienteMapper.createCliente(clienteDTO);
+                _context.Clientes.Add(cliente);
+                _context.SaveChanges();
+
+                return clienteDTO;
             }
-
-            var cliente = ClienteMapper.createCliente(clienteDTO);
-            _context.Clientes.Add(cliente);
-            _context.SaveChanges();
-
-            return clienteDTO;
+            catch
+            {
+                throw;
+            }
         }
 
         public bool EliminarCliente(int DNI)
         {
-            Cliente cliente = _context.Clientes.FirstOrDefault(c => c.Dni == DNI);
-
-            if (cliente != null)
+            try
             {
+                Cliente cliente = _context.Clientes.FirstOrDefault(c => c.Dni == DNI);
+
+                if (cliente == null) return false;
+
                 _context.Clientes.Remove(cliente);
                 _context.SaveChanges();
                 return true;
             }
-            return false;
+            catch
+            {
+                throw;
+            }
         }
 
         public ClienteDTO TraerClienteId(int DNI)
         {
-            Cliente cliente = _context.Clientes.FirstOrDefault(c => c.Dni == DNI);
+            try
+            {
+                Cliente cliente = _context.Clientes.FirstOrDefault(c => c.Dni == DNI);
 
-            ClienteDTO clienteDTO = ClienteMapper.ToClienteDTO(cliente);
+                ClienteDTO clienteDTO = ClienteMapper.ToClienteDTO(cliente);
 
-            return clienteDTO;
+                return clienteDTO;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public List<ClienteDTO> TraerClientes()
         {
-            List<Cliente> clientes = _context.Clientes.ToList();
+            try
+            {
+                List<Cliente> clientes = _context.Clientes.ToList();
 
-            List<ClienteDTO> clienteDTOs = ClienteMapper.ToClienteList(clientes);
+                List<ClienteDTO> clienteDTOs = ClienteMapper.ToClienteList(clientes);
 
-            return clienteDTOs;
+                return clienteDTOs;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-
-        private bool ClienteExists(int DNI)
-        {
-            return (_context.Clientes.Any(e => e.Dni == DNI));
-        }
     }
 }

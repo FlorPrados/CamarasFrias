@@ -41,7 +41,7 @@ namespace CamarasFrias.Controllers
                 result.StatusCode = (int)HttpStatusCode.Created;
                 return result;
             }
-            return BadRequest();
+            return Conflict();
         }
 
         [HttpDelete("Id")]
@@ -63,6 +63,20 @@ namespace CamarasFrias.Controllers
             var venta = _ventaBusiness.VerVenta(NroComprobante);
 
             if (venta != null)
+            {
+                var result = new JsonResult(venta);
+                result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
+            }
+            return NotFound();
+        }
+
+        [HttpGet("NroDNI")]
+        public async Task<IActionResult> GetVentasCliente(int NroDNI)
+        {
+            var venta = _ventaBusiness.VerVentasCliente(NroDNI);
+            
+            if(venta != null)
             {
                 var result = new JsonResult(venta);
                 result.StatusCode = (int)HttpStatusCode.OK;

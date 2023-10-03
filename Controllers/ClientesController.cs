@@ -92,16 +92,14 @@ namespace CamarasFrias.Controllers
         [HttpDelete("{DNI}")]
         public async Task<IActionResult> Delete(int DNI)
         {
-            var result = new JsonResult(_clienteBusiness.EliminarCliente(DNI));
-            if(!_clienteBusiness.EliminarCliente(DNI))
+            var cliente = _clienteBusiness.EliminarCliente(DNI);
+            if(cliente)
             {
-                result.StatusCode = (int)HttpStatusCode.NotFound;
-            }
-            else
-            {
+                var result = new JsonResult(cliente);
                 result.StatusCode = (int)HttpStatusCode.OK;
+                return result;
             }
-            return result;
+            return NotFound();
         }
     }
 }

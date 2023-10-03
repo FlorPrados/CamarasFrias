@@ -16,96 +16,135 @@ namespace CamarasFrias.Application.Business
 
         public bool ActualizarProducto(int Id, ProductoPutDTO producto)
         {
-            var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
-
-            if (pto == null)
+            try
             {
-                return false;
-            }
-            var ptoActualizado = ProductoMapper.putProducto(pto);
-            _context.SaveChanges();
+                var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
 
-            return true;
+                if (pto == null) return false;
+
+                var ptoActualizado = ProductoMapper.putProducto(pto);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public bool ActualizarStock(int Id, int cantidad)
         {
-            var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
-
-            if (pto == null)
+            try
             {
-                return false;
+                var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
+
+                if (pto == null) return false;
+
+                pto.Stock = cantidad;
+                _context.SaveChanges();
+
+                return true;
             }
-
-            pto.Stock = cantidad;
-            _context.SaveChanges();
-
-            return true;
+            catch
+            {
+                throw;
+            }
         }
 
         public bool ActualizarPrecio(int Id, int precio)
         {
-            var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
-
-            if (pto == null)
+            try
             {
-                return false;
+                var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
+
+                if (pto == null) return false;
+
+                pto.Precio = precio;
+                _context.SaveChanges();
+
+                return true;
             }
-
-            pto.Precio = precio;
-            _context.SaveChanges();
-
-            return true;
+            catch
+            {
+                throw;
+            }
         }
 
         public ProductoDTO CrearProducto(ProductoDTO productoDTO)
         {
-            Producto pto = _context.Productos.FirstOrDefault(p => p.Id == productoDTO.Id);
-
-            if (pto != null)
+            try
             {
-                return null;
-            }
-            var producto = ProductoMapper.createProducto(productoDTO);
-            _context.Productos.Add(producto);
-            _context.SaveChanges();
+                Producto pto = _context.Productos.FirstOrDefault(p => p.Id == productoDTO.Id);
 
-            return productoDTO;
+                if (pto != null)
+                {
+                    return null;
+                    //throw new InvalidOperationException("Ya existe un producto con el Id registrado"); ;
+                }
+                var producto = ProductoMapper.createProducto(productoDTO);
+                _context.Productos.Add(producto);
+                _context.SaveChanges();
+
+                return productoDTO;
+            }
+            catch
+            {
+                throw;
+            }
 
         }
 
         public bool EliminarProducto(int Id)
         {
-            var producto = _context.Productos.FirstOrDefault(p => p.Id == Id);
-
-            if (producto == null)
+            try
             {
-                return false;
+                var producto = _context.Productos.FirstOrDefault(p => p.Id == Id);
+
+                if (producto == null) return false;
+
+                _context.Productos.Remove(producto);
+                _context.SaveChanges();
+
+                return true;
             }
-
-            _context.Productos.Remove(producto);
-            _context.SaveChanges();
-
-            return true;
+            catch
+            {
+                throw;
+            }
 
         }
 
         public ProductoDTO TraerProductoId(int Id)
         {
-            var producto = _context.Productos.FirstOrDefault(p => p.Id == Id);
+            try
+            {
+                var producto = _context.Productos.FirstOrDefault(p => p.Id == Id);
 
-            var pto = ProductoMapper.ToProductoDTO(producto);
-            return pto;
+                var pto = ProductoMapper.ToProductoDTO(producto);
+                return pto;
+            }
+            catch
+            {
+                throw;
+            }
 
         }
 
         public List<ProductoDTO> TraerProductos()
         {
-            List<Producto> productos = _context.Productos.ToList();
+            try
+            {
+                List<Producto> productos = _context.Productos.ToList();
 
-            var ptos = ProductoMapper.ToProductoList(productos);
+                var ptos = ProductoMapper.ToProductoList(productos);
 
-            return ptos;
+                return ptos;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
