@@ -28,7 +28,6 @@ namespace CamarasFrias.Application.Business
 
             _context.SaveChanges();
             return true;
-
         }
 
         public ClienteDTO CrearCliente(ClienteDTO clienteDTO)

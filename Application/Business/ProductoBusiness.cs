@@ -39,7 +39,7 @@ namespace CamarasFrias.Application.Business
             {
                 var pto = _context.Productos.FirstOrDefault(p => p.Id == Id);
 
-                if (pto == null) return false;
+                if (pto == null || cantidad < 0 ) return false;
 
                 pto.Stock = cantidad;
                 _context.SaveChanges();

@@ -31,6 +31,8 @@ namespace CamarasFrias.Application.Business
                 venta.Nota = ventaDTO.Nota;
                 venta.PrecioFinal = productChoice(ventaDTO, venta);
 
+                if (venta.PrecioFinal == 0) return false;
+
                 _context.SaveChanges();
 
                 return true;
@@ -41,7 +43,7 @@ namespace CamarasFrias.Application.Business
             }
         }
 
-        public VentaDTO CrearVenta(VentaDTO ventaDTO)
+        public bool CrearVenta(VentaDTO ventaDTO)
         {
             try
             {
@@ -56,10 +58,12 @@ namespace CamarasFrias.Application.Business
                 _context.SaveChanges();   // ?
 
                 venta.PrecioFinal = productChoice(ventaDTO, venta);
+
+                if (venta.PrecioFinal == 0) return false;
+
                 _context.Venta.Update(venta);
                 _context.SaveChanges();
-
-                return ventaDTO;
+                return true;
             }
             catch
             {
@@ -79,22 +83,27 @@ namespace CamarasFrias.Application.Business
                 {
                     var producto = productos.FirstOrDefault(p => p.Id == pto.ProductoID);
                     if (producto != null)
-                    {
-                        var detalleVenta = new DetalleVentum
+                        if (producto.Stock >= pto.Cantidad && pto.Cantidad > 0)
                         {
-                            VentaId = venta.NroComprobante,
-                            ProductoId = producto.Id,
-                            Cantidad = pto.Cantidad,
-                            PorcDescuento = pto.PorcDescuento,
-                            Subtotal = (producto.Precio * pto.Cantidad)
-                        };
+                            var detalleVenta = new DetalleVentum
+                            {
+                                VentaId = venta.NroComprobante,
+                                ProductoId = producto.Id,
+                                Cantidad = pto.Cantidad,
+                                PorcDescuento = pto.PorcDescuento,
+                                Subtotal = (producto.Precio * pto.Cantidad)
+                            };
 
+                            _context.DetalleVenta.Add(detalleVenta);
+                            precioTotal += detalleVenta.Subtotal;
 
-                        _context.DetalleVenta.Add(detalleVenta);
-                        precioTotal += detalleVenta.Subtotal;
-                    }
+                            producto.Stock -= pto.Cantidad;
+                        }
+                        else
+                            return 0;
+
                     else
-                        return 0; // TO DO
+                        return 0;
                 }
                 return precioTotal;
             }

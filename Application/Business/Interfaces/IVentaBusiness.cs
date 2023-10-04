@@ -4,7 +4,7 @@ namespace CamarasFrias.Application.Business.Interfaces
 {
     public interface IVentaBusiness
     {
-        public VentaDTO CrearVenta(VentaDTO ventaDTO);
+        public bool CrearVenta(VentaDTO ventaDTO);
         public bool ActualizarVenta(int NroComprobante, VentaDTO ventaDTO);
         public VentaGetDTO VerVenta(int NroComprobante);
         public List<VentaGetDTO> VerVentasCliente(int NroDNI);
