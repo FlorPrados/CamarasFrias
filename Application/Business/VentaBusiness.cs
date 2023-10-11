@@ -2,6 +2,7 @@
 using CamarasFrias.Application.Mapper;
 using CamarasFrias.Domain.DTO;
 using CamarasFrias.Domain.Entities;
+using CamarasFrias.Domain.Exceptions;
 using CamarasFrias.Infrastructure.Persistence;
 using System.Collections.Generic;
 
@@ -55,7 +56,7 @@ namespace CamarasFrias.Application.Business
                 };
 
                 _context.Venta.Add(venta);
-                _context.SaveChanges();   // ?
+                _context.SaveChanges();
 
                 venta.PrecioFinal = productChoice(ventaDTO, venta);
 
@@ -103,7 +104,7 @@ namespace CamarasFrias.Application.Business
                             return 0;
 
                     else
-                        return 0;
+                        throw new ProductNotFoundException("El producto no se ha encontrado");
                 }
                 return precioTotal;
             }
@@ -167,7 +168,7 @@ namespace CamarasFrias.Application.Business
                 var cliente = _context.Clientes.FirstOrDefault(c => c.Dni == NroDNI);
                 if (cliente == null) return null;
 
-                var ventas = _context.Venta.Where(v=> v.ClienteId == NroDNI);
+                var ventas = _context.Venta.Where(v=> v.ClienteId == NroDNI).ToList();
                 var detalles = _context.DetalleVenta.ToList();
                 var ptos = _context.Productos.ToList();
 

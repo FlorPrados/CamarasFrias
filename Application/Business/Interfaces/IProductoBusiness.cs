@@ -11,6 +11,5 @@ namespace CamarasFrias.Application.Business.Interfaces
         public bool ActualizarStock(int Id, int cantidad);
         public bool ActualizarPrecio(int Id, int precio);
         public bool EliminarProducto(int Id);
-
     }
 }

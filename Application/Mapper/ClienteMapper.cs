@@ -8,8 +8,8 @@ namespace CamarasFrias.Application.Mapper
 
         public static Cliente createCliente(ClienteDTO clienteDTO)
         {
-            if (clienteDTO != null)
-            {
+            //if (clienteDTO != null)
+            //{
                 return new Cliente
                 {
                     Nombre = clienteDTO.Nombre,
@@ -17,8 +17,8 @@ namespace CamarasFrias.Application.Mapper
                     Domicilio = clienteDTO.Domicilio,
                     Telefono = clienteDTO.Telefono
                 };
-            }
-            return null;
+            //}
+            //return null;
         }
 
 

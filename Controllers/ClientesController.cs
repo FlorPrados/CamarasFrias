@@ -10,6 +10,7 @@ using CamarasFrias.Infrastructure.Persistence;
 using CamarasFrias.Application.Business.Interfaces;
 using System.Net;
 using CamarasFrias.Domain.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CamarasFrias.Controllers
 {
@@ -26,6 +27,7 @@ namespace CamarasFrias.Controllers
 
         // GET: api/Clientes
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetClientes()
         {
             var result = new JsonResult(_clienteBusiness.TraerClientes());
@@ -35,6 +37,7 @@ namespace CamarasFrias.Controllers
 
         //// GET: api/Clientes/5
         [HttpGet("{DNI}")]
+        [Authorize]
         public async Task<ActionResult<Cliente>> GetCliente(int DNI)
         {
             var result = new JsonResult(_clienteBusiness.TraerClienteId(DNI));
@@ -48,11 +51,11 @@ namespace CamarasFrias.Controllers
                 result.StatusCode = (int)HttpStatusCode.OK;
             }
             return result;
-
         }
 
         //// PUT: api/Clientes/5
         [HttpPut("{id}")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PutCliente(int id, ClientePutDTO cliente)
         {
             var clienteDNI = _clienteBusiness.TraerClienteId(id);
@@ -72,6 +75,7 @@ namespace CamarasFrias.Controllers
 
         //// POST: api/Clientes
         [HttpPost]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Create(ClienteDTO cliente)
         {
             var clienteCreado = _clienteBusiness.CrearCliente(cliente);
@@ -90,6 +94,7 @@ namespace CamarasFrias.Controllers
 
         //// DELETE: api/Clientes/5
         [HttpDelete("{DNI}")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Delete(int DNI)
         {
             var cliente = _clienteBusiness.EliminarCliente(DNI);

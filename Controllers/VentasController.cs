@@ -1,8 +1,10 @@
 ﻿using CamarasFrias.Application.Business.Interfaces;
 using CamarasFrias.Domain.DTO;
 using CamarasFrias.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace CamarasFrias.Controllers
@@ -19,6 +21,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpPut("nroComprobante")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Put(int nroComprobante, VentaDTO ventaDTO)
         {
             var venta = _ventaBusiness.ActualizarVenta(nroComprobante, ventaDTO);
@@ -32,6 +35,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Create(VentaDTO ventaDTO)
         {
             var venta = _ventaBusiness.CrearVenta(ventaDTO);
@@ -45,6 +49,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpDelete("Id")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Delete(int Id)
         {
             var venta = _ventaBusiness.EliminarVenta(Id);
@@ -58,6 +63,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpGet("NroComprobante")]
+        [Authorize]
         public async Task<IActionResult> GetVenta(int NroComprobante)
         {
             var venta = _ventaBusiness.VerVenta(NroComprobante);
@@ -72,6 +78,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpGet("NroDNI")]
+        [Authorize]
         public async Task<IActionResult> GetVentasCliente(int NroDNI)
         {
             var venta = _ventaBusiness.VerVentasCliente(NroDNI);
@@ -86,6 +93,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetVentas()
         {
             var ventas = _ventaBusiness.VerVentas();

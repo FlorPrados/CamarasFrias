@@ -10,6 +10,8 @@ using CamarasFrias.Infrastructure.Persistence;
 using CamarasFrias.Application.Business.Interfaces;
 using CamarasFrias.Domain.DTO;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace CamarasFrias.Controllers
 {
@@ -24,6 +26,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Create(ProductoDTO producto)
         {
             var pto = _productoBusiness.CrearProducto(producto);
@@ -61,6 +64,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpPut("Id")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Put(int Id, ProductoPutDTO producto)
         {
             var pto = _productoBusiness.ActualizarProducto(Id, producto);
@@ -74,6 +78,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpPatch("AcualizarStock/{Id}")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PatchStock(int Id, int cantidad)
         {
             var pto = _productoBusiness.ActualizarStock(Id, cantidad);
@@ -86,6 +91,7 @@ namespace CamarasFrias.Controllers
             return NotFound();
         }
         [HttpPatch("ActualizarPrecio/{Id}")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PatchPrecio(int Id, int precio)
         {
             var pto = _productoBusiness.ActualizarPrecio(Id, precio);
@@ -99,6 +105,7 @@ namespace CamarasFrias.Controllers
         }
 
         [HttpDelete("Id")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> Delete(int Id)
         {
             var pto = _productoBusiness.EliminarProducto(Id);

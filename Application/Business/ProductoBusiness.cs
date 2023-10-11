@@ -77,20 +77,17 @@ namespace CamarasFrias.Application.Business
             {
                 Producto pto = _context.Productos.FirstOrDefault(p => p.Id == productoDTO.Id);
 
-                if (pto != null)
-                {
-                    return null;
-                    //throw new InvalidOperationException("Ya existe un producto con el Id registrado"); ;
-                }
+                if (pto != null) return null;
+
                 var producto = ProductoMapper.createProducto(productoDTO);
                 _context.Productos.Add(producto);
                 _context.SaveChanges();
 
                 return productoDTO;
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                throw; // TO DO 
             }
 
         }
